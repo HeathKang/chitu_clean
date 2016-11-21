@@ -1,0 +1,35 @@
+
+[app]
+
+name = "ChiTu"
+interval = 5
+
+[logging]
+
+debug = true
+
+logfile = "logs/winwin.log"
+backup_count = 5
+max_size = 1048576
+format_string = '({record.time:%Y-%m-%d %H:%M:%S.%f%z}) {record.level_name},{record.channel}[{record.lineno}]: {record.message}'
+
+[redis]
+
+host = "127.0.0.1"
+port = 6379
+db = 7
+
+[influxdb]
+host = "127.0.0.1"
+port = 8086
+username ="root"
+password = "root"
+db = "marshall"
+
+# s: second
+time_precision = "s"
+
+
+
+
+

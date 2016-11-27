@@ -11,6 +11,7 @@ import time
 import traceback
 
 import msgpack
+from sys import version_info
 from redis.exceptions import ConnectionError, NoScriptError
 from maboio.lib.influxdb_lib import InfluxC
 from maboio.lib.redis_lib import RedisClient
@@ -63,8 +64,10 @@ class Messenger(object):
                     for i in range(0, data_len):
 
                         rdata = self.red.dequeue()
-
-                        data = transefer(msgpack.unpackb(rdata[1]))
+                        if version_info[0] == 3:
+                            data = transefer(msgpack.unpackb(rdata[1]))
+                        else:
+                            data = msgpack.unpackb(rdata[1])
 
                         # log.debug(data)
 

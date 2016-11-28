@@ -5,18 +5,26 @@ name = "ChiTu"
 interval = 5
 
 [logging]
-
+# boolean type, if true ,the debug information will print sys.stdout.
+# if false, the debug information will print to fill we specified.
 debug = true
-
+# the derectory in which our log file reside.
 logfile = "logs/winwin.log"
+# backup log_fie maximum number is 5.
 backup_count = 5
+# A log files maximum size.if size exceed this, bakcup it.
 max_size = 1048576
+# format your debug information.
+# for more infomation, please checkout this site:
+#       http://logbook.readthedocs.io/en/stable/
 format_string = '({record.time:%Y-%m-%d %H:%M:%S.%f%z}) {record.level_name},{record.channel}[{record.lineno}]: {record.message}'
 
 [redis]
-
+# local ip or remote ip ?
 host = "127.0.0.1"
+# which port is your redis server host?
 port = 6379
+# which db your data reside in ?
 db = 7
 
 [influxdb]

@@ -33,10 +33,11 @@ def transefer(bytes_dict):
         return bytes_dict
     for key, value in bytes_dict.items():
         value = transefer(value)
-        if isinstance(value, dict):
-            a[key.decode()] = value
-        else:
-            a[key.decode()] = value.decode()
+        if isinstance(key, bytes):
+            key = key.decode()
+        if isinstance(value, bytes):
+            value = value.decode()
+        a[key] = value
     return a
 
 
@@ -64,10 +65,7 @@ class Messenger(object):
                     for i in range(0, data_len):
 
                         rdata = self.red.dequeue()
-                        if version_info[0] == 3:
-                            data = transefer(msgpack.unpackb(rdata[1]))
-                        else:
-                            data = msgpack.unpackb(rdata[1])
+                        data = transefer(msgpack.unpackb(rdata[1]))
 
                         # log.debug(data)
 

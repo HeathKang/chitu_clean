@@ -10,7 +10,7 @@ dead_threshold = 1
 node_name = 'test_node'
 [logging]
 # boolean type, if true ,the debug information will print sys.stdout.
-# if false, the debug information will print to fill we specified.
+# if false, the debug information will print to file we specified.
 debug = true
 # the derectory in which our log file reside.
 logfile = "logs/winwin.log"

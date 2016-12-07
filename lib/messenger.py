@@ -31,6 +31,7 @@ class Messenger(object):
         self.influxc = InfluxC(conf['influxdb'])
         self.dead_threshold = conf['app']['dead_threshold']
         self.node_name = conf['app']['node_name']
+        self.int_tags = conf['app']['int_tags']
 
     def run(self):
         """ send msg to influxdb  """
@@ -62,12 +63,21 @@ class Messenger(object):
                     for i in range(0, data_len):
 
                         rdata = self.red.dequeue()
-                        data = transefer(msgpack.unpackb(rdata[1]))
+                        data = Messenger.transefer(msgpack.unpackb(rdata[1]))
+
+
+
+                        data_handle = self.convert_float(data['data']['fields'])
+
+                        data['data']['fields'] = data_handle
 
                         # log.debug(data)
 
                         # string to integer
-                        data['data']['time'] = int(data['data']['time'])
+
+                        #data['data']['time'] = int(data['data']['time'])
+
+                        data['data']['time'] = int(1481016595)
 
                         json_data = [data['data']]
 
@@ -98,23 +108,48 @@ class Messenger(object):
             # timer("output")
             time.sleep(self.interval)
 
+    @staticmethod
+    def transefer(bytes_dict):
+        """
+        lua to python3, lua's table will be transefer to python dict, but the key
+        and the value of dict is byte string, and bytes string can't be directly
+        used in send function from influxdb package.
+        :param bytes_dict: a dict whcih key and value is byte string.
+        :return: a user-friendly normal dict.
+        """
+        a = {}
+        if not isinstance(bytes_dict, dict):
+            return bytes_dict
+        for key, value in bytes_dict.items():
+            value = Messenger.transefer(value)
+            if isinstance(key, bytes):
+                key = key.decode()
+            if isinstance(value, bytes):
+                value = value.decode()
+            a[key] = value
+        return a
 
-def transefer(bytes_dict):
-    """
-    lua to python3, lua's table will be transefer to python dict, but the key
-    and the value of dict is byte string, and bytes string can't be directly
-    used in send function from influxdb package.
-    :param bytes_dict: a dict whcih key and value is byte string.
-    :return: a user-friendly normal dict.
-    """
-    a = {}
-    if not isinstance(bytes_dict, dict):
-        return bytes_dict
-    for key, value in bytes_dict.items():
-        value = transefer(value)
-        if isinstance(key, bytes):
-            key = key.decode()
-        if isinstance(value, bytes):
-            value = value.decode()
-        a[key] = value
-    return a
+    def convert_float(self,data):
+        """
+        convert the int data to float data
+        :param  data,allowed_tag
+        :return :data we need
+        """
+        int_tags = self.int_tags
+
+        data_handle = {}
+
+        log.debug(data)
+
+        for key,value in data.items():
+
+            if (key not in int_tags) and (type(value) == int):
+
+                data_handle[key] = float(value)
+
+            else:
+                data_handle[key] = value
+
+        log.debug(data_handle)
+
+        return data_handle

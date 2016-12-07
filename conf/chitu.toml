@@ -2,6 +2,7 @@
 [app]
 
 name = "ChiTu"
+int_tags = []
 interval = 5
 # unit: minute eg: if you specified 1, then after 5 minutes the redis don't have data,
 # then the node is juged as dead.
@@ -29,17 +30,19 @@ host = "127.0.0.1"
 # which port is your redis server host?
 port = 6379
 # which db your data reside in ?
-db = 8
+db = 3
 
 [influxdb]
 host = "127.0.0.1"
 port = 8086
 username ="root"
 password = "root"
-db = "marshall"
+db = "heath"
 
 # s: second
 time_precision = "s"
+
+
 
 
 

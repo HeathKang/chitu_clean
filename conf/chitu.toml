@@ -30,17 +30,17 @@ host = "127.0.0.1"
 # which port is your redis server host?
 port = 6379
 # which db your data reside in ?
-db = 3
+db = 1
 
 [influxdb]
-host = "127.0.0.1"
+host = "localhost"
 port = 8086
 username ="root"
 password = "root"
-db = "heath"
+db = "seat_test"
 
 # s: second
-time_precision = "s"
+time_precision = "ms"
 
 
 

@@ -46,8 +46,11 @@ class Messenger(object):
                              'fields': {'node_name': self.node_name},
                              'tags': {'alive?': 'no'}
                              }
-                self.influxc.send([dead_json])
-                log.debug('the node is dead now')
+                try:
+                    self.influxc.send([dead_json])
+                    log.debug('the node is dead now')
+                except Exception as e:
+                    log.error(e)
             try:
 
                 data_len = self.red.get_len()
@@ -63,9 +66,11 @@ class Messenger(object):
                     for i in range(0, data_len):
 
                         rdata = self.red.dequeue()
-                        data = Messenger.transefer(msgpack.unpackb(rdata[1]))
-
-
+                        if version_info[0] == 3:
+            
+                            data = Messenger.transefer(msgpack.unpackb(rdata[1]))
+                        else:
+                            data = msgpack.unpackb(rdata[1])
 
                         data_handle = self.convert_float(data['data']['fields'])
 
@@ -75,9 +80,9 @@ class Messenger(object):
 
                         # string to integer
 
-                        #data['data']['time'] = int(data['data']['time'])
+                        data['data']['time'] = int(round(float(data['data']['time'])))
 
-                        data['data']['time'] = int(1481016595)
+                        #data['data']['time'] = int(1481016595)
 
                         json_data = [data['data']]
 
